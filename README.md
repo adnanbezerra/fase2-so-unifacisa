@@ -12,6 +12,7 @@
 
 1. [Gerador de input](#gerador-de-input)
 2. [Execução do simulador](#execução-do-simulador)
+3. [Policies](#policies)
 
 ## Gerador de input
 
@@ -44,3 +45,19 @@ Flags:
 | `--input` | Arquivo CSV contendo o trace de acessos |
 | `--policy` | Política de substituição: `fifo`, `lru` ou `lfu` |
 | `--capacity` | Capacidade do cache |
+
+## Policies
+
+Um hit acontece quando o `item_id` acessado já está na RAM/cache. Um miss acontece quando o item não está armazenado e precisa entrar no cache.
+
+A `capacity` define o número máximo de itens que podem ficar armazenados ao mesmo tempo.
+
+- `fifo`: remove o item mais antigo quando o cache está cheio.
+- `lru`: remove o item menos recentemente usado quando o cache está cheio.
+- `lfu`: remove o item menos frequente quando o cache está cheio. Em empate, remove o menos recentemente usado entre os empatados.
+
+Exemplo:
+
+```bash
+python3 cache_simulator.py --input trace.csv --policy lru --capacity 100
+```
