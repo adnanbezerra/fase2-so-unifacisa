@@ -2,12 +2,8 @@ import csv
 from dataclasses import dataclass
 from pathlib import Path
 
-from helpers.graphic_generator import generate_hit_rates_graph
 from helpers.use_flag_or_await_input import get_simulator_config
 from policies import create_policy
-
-
-GRAPHIC_CAPACITIES = (100, 250, 500, 750, 1000)
 
 
 @dataclass(frozen=True)
@@ -41,8 +37,6 @@ def main() -> None:
         raise SystemExit(f"Erro: {error}") from error
 
     print_result(config.input_path, config.policy, config.capacity, result)
-    graphic_path = generate_policy_hit_rates_graph(config.input_path, config.policy)
-    print(f"Gráfico: {graphic_path}")
 
 
 def run_simulation(input_path: Path, policy) -> SimulationResult:
@@ -64,21 +58,6 @@ def run_simulation(input_path: Path, policy) -> SimulationResult:
         total_accesses=hits + misses,
         hits=hits,
         misses=misses,
-    )
-
-
-def generate_policy_hit_rates_graph(input_path: Path, policy_name: str) -> Path:
-    hit_rates = []
-
-    for capacity in GRAPHIC_CAPACITIES:
-        policy = create_policy(policy_name, capacity)
-        result = run_simulation(input_path, policy)
-        hit_rates.append(result.hit_rate)
-
-    return generate_hit_rates_graph(
-        policy_name=policy_name,
-        capacities=list(GRAPHIC_CAPACITIES),
-        hit_rates=hit_rates,
     )
 
 

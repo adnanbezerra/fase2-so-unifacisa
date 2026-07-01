@@ -20,7 +20,11 @@
 
 O arquivo `helpers/csv_generator.py` gera o arquivo `input/trace.csv` usado como entrada do simulador.
 
-Ele cria 10.000 registros na coluna `item_id`, com IDs aleatórios entre 1 e 1000.
+Ele cria 10.000 registros determinísticos na coluna `item_id`, usando uma seed fixa. O trace combina 3 comportamentos:
+
+- localidade temporal em conjuntos de trabalho que mudam, favorecendo LRU;
+- itens quentes de longa duração misturados com ruído, favorecendo LFU;
+- varredura de itens frios intercalada com retorno dos itens quentes, expondo custo de substituições ruins.
 
 Para executar:
 
@@ -73,9 +77,11 @@ deactivate
 
 ## Gráficos
 
-Ao final da execução, o simulador gera um gráfico PNG em `output/` com o padrão `{policy}-hit-rates.png`.
+O `cache_simulator.py` executa apenas uma simulação com a policy e a capacity informadas. Para gerar os gráficos comparativos, use `helpers/run_policy_graphics.py`.
 
-O gráfico compara as capacities 100, 250, 500, 750 e 1000 no eixo X com o hit rate (%) no eixo Y.
+O script de gráficos gera um PNG em `output/` com o padrão `{policy}-hit-rates.png`.
+
+O gráfico compara as capacities 25, 50, 100, 250, 500 e 1000 no eixo X com o hit rate (%) no eixo Y.
 
 Para gerar os gráficos das 3 policies:
 
@@ -84,6 +90,23 @@ python helpers/run_policy_graphics.py
 ```
 
 Esse script gera 3 gráficos no total: `fifo-hit-rates.png`, `lru-hit-rates.png` e `lfu-hit-rates.png`.
+
+Com o trace atual, os resultados esperados sao:
+
+| Capacidade | FIFO | LRU | LFU |
+| --- | ---: | ---: | ---: |
+| 25 | 24.76% | 25.81% | 12.81% |
+| 50 | 38.50% | 43.50% | 30.05% |
+| 100 | 50.52% | 55.06% | 50.31% |
+| 250 | 57.39% | 58.62% | 60.14% |
+| 500 | 60.55% | 62.68% | 63.46% |
+| 1000 | 62.33% | 63.55% | 63.56% |
+
+Leitura para apresentacao:
+
+- FIFO e simples e barato, mas nao usa informacao de uso recente ou frequencia. Por isso fica atras quando itens uteis podem ser removidos apenas por serem antigos.
+- LRU tem melhor comportamento com localidade temporal. Ele ganha em caches pequenas e medias porque preserva paginas usadas recentemente.
+- LFU sofre quando a cache e pequena, porque frequencias antigas podem ocupar espaco e atrasar adaptacao. Com mais capacidade, ele passa a proteger melhor os itens quentes recorrentes e supera FIFO/LRU no trace atual.
 
 ## Policies
 

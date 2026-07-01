@@ -12,7 +12,7 @@ from policies import create_policy
 
 DEFAULT_INPUT_PATH = ROOT_DIR / "input" / "trace.csv"
 POLICIES = ("fifo", "lru", "lfu")
-CAPACITIES = (100, 250, 500, 750, 1000)
+CAPACITIES = (25, 50, 100, 250, 500, 1000)
 
 
 def main() -> None:
