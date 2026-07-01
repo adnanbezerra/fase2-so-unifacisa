@@ -12,14 +12,15 @@
 
 1. [Gerador de input](#gerador-de-input)
 2. [Execução do simulador](#execução-do-simulador)
-3. [Policies](#policies)
+3. [Ambiente virtual](#ambiente-virtual)
 4. [Gráficos](#gráficos)
+5. [Policies](#policies)
 
 ## Gerador de input
 
 O arquivo `helpers/csv_generator.py` gera o arquivo `input/trace.csv` usado como entrada do simulador.
 
-Ele cria 10.000 registros na coluna `item_id`, com IDs aleatórios entre 1 e 50.
+Ele cria 10.000 registros na coluna `item_id`, com IDs aleatórios entre 1 e 1000.
 
 Para executar:
 
@@ -47,6 +48,29 @@ Flags:
 | `--policy` | Política de substituição: `fifo`, `lru` ou `lfu` |
 | `--capacity` | Capacidade do cache |
 
+## Ambiente virtual
+
+Os gráficos usam `matplotlib` e `seaborn`. Para instalar e rodar corretamente, use um ambiente virtual:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Depois disso, rode os scripts normalmente com o ambiente ativo:
+
+```bash
+python cache_simulator.py --policy lru --capacity 100
+python helpers/run_policy_graphics.py
+```
+
+Para sair do ambiente virtual:
+
+```bash
+deactivate
+```
+
 ## Gráficos
 
 Ao final da execução, o simulador gera um gráfico PNG em `output/` com o padrão `{policy}-hit-rates.png`.
@@ -56,7 +80,7 @@ O gráfico compara as capacities 100, 250, 500, 750 e 1000 no eixo X com o hit r
 Para gerar os gráficos das 3 policies:
 
 ```bash
-python3 helpers/run_policy_graphics.py
+python helpers/run_policy_graphics.py
 ```
 
 Esse script gera 3 gráficos no total: `fifo-hit-rates.png`, `lru-hit-rates.png` e `lfu-hit-rates.png`.
