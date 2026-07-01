@@ -13,6 +13,7 @@
 1. [Gerador de input](#gerador-de-input)
 2. [Execução do simulador](#execução-do-simulador)
 3. [Policies](#policies)
+4. [Gráficos](#gráficos)
 
 ## Gerador de input
 
@@ -45,6 +46,20 @@ Flags:
 | `--input` | Arquivo CSV contendo o trace de acessos |
 | `--policy` | Política de substituição: `fifo`, `lru` ou `lfu` |
 | `--capacity` | Capacidade do cache |
+
+## Gráficos
+
+Ao final da execução, o simulador gera um gráfico PNG em `output/` com o padrão `{policy}-hit-rates.png`.
+
+O gráfico compara as capacities 100, 250, 500, 750 e 1000 no eixo X com o hit rate (%) no eixo Y.
+
+Para gerar os gráficos das 3 policies:
+
+```bash
+python3 helpers/run_policy_graphics.py
+```
+
+Esse script gera 3 gráficos no total: `fifo-hit-rates.png`, `lru-hit-rates.png` e `lfu-hit-rates.png`.
 
 ## Policies
 
